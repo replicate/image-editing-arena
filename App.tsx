@@ -4,11 +4,12 @@ import { ApiKeyModal } from './components/ApiKeyModal';
 import { AVAILABLE_MODELS } from './constants';
 import { createPrediction, pollPrediction } from './services/replicateService';
 import { PredictionResult } from './types';
-import { Wand2, Download, Upload, Trash2, AlertTriangle, Clock, ChevronRight, X, Maximize2, Moon, Sun } from 'lucide-react';
+import { Wand2, Download, Upload, Trash2, AlertTriangle, Clock, ChevronRight, X, Maximize2, Moon, Sun, Menu } from 'lucide-react';
 
 const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [showKeyModal, setShowKeyModal] = useState(true);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [prompt, setPrompt] = useState<string>("Turn the fire into water");
   
   // Default Input Image
@@ -194,8 +195,47 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans overflow-hidden transition-colors duration-300">
+    <div className="flex flex-col md:flex-row h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans overflow-hidden transition-colors duration-300">
       <ApiKeyModal isOpen={showKeyModal} onSave={(key) => { setApiKey(key); setShowKeyModal(false); }} />
+
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0f0f0f] border-b border-gray-200 dark:border-[#222] z-30">
+        <button
+          onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+          className="p-2 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] rounded-lg transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+        
+        <svg viewBox="0 0 831 192" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-auto text-black dark:text-white">
+          <path d="M197.3 64.2C220.5 64.2 240 79.6 240 108.2C240 110.1 240 111.7 239.8 114.6H170.1C171 129.1 182.7 138.7 197.4 138.7C209.8 138.7 218.1 133 222.7 125.2L237.6 135.8C229.6 148.4 215.8 156.4 197.2 156.4C170.3 156.4 150.9 137.3 150.9 110.3C151 84.2 170.4 64.2 197.3 64.2ZM171.1 100.3H220.4C218.3 87.5 208 80.6 196.6 80.6C185.2 80.6 173.7 87.2 171.1 100.3Z" fill="currentColor"/>
+          <path d="M259.8 65.9H279.3V77.8C284.3 70.7 295.1 64.2 307.8 64.2C332.1 64.2 350.5 84.9 350.5 110.3C350.5 135.6 332.1 156.4 307.8 156.4C295 156.4 284.2 149.8 279.3 142.7V191.6H259.8V65.9ZM304.3 81.9C288.5 81.9 277.7 94.3 277.7 110.3C277.7 126.3 288.5 138.7 304.3 138.7C319.9 138.7 330.7 126.3 330.7 110.3C330.7 94.3 319.9 81.9 304.3 81.9Z" fill="currentColor"/>
+          <path d="M389.9 21.6H370.4V154.5H389.9V21.6Z" fill="currentColor"/>
+          <path d="M425.9 46.6C418.8 46.6 412.8 40.8 412.8 33.5C412.8 26.4 418.8 20.6 425.9 20.6C433.2 20.6 438.8 26.5 438.8 33.5C438.8 40.8 433.2 46.6 425.9 46.6ZM416.2 65.9H435.7V154.5H416.2V65.9Z" fill="currentColor"/>
+          <path d="M502.3 156.3C475.7 156.3 455.5 136.4 455.5 110.2C455.5 84 475.7 64.1 502.3 64.1C520.6 64.1 536 73.9 543.6 88.6L526.6 97.8C522.3 88.8 513.7 82.2 502.3 82.2C486.5 82.2 475.4 94.4 475.4 110.2C475.4 126 486.6 138.2 502.3 138.2C513.6 138.2 522.3 131.6 526.6 122.6L543.6 131.8C536 146.6 520.5 156.3 502.3 156.3Z" fill="currentColor"/>
+          <path d="M597.8 64.2C610.6 64.2 621.2 70.8 626.2 77.8V65.9H645.7V154.5H626.2V142.6C621.2 149.7 610.6 156.3 597.8 156.3C573.5 156.3 555.1 135.6 555.1 110.2C555.1 84.9 573.5 64.2 597.8 64.2ZM601.4 81.9C585.6 81.9 575 94.3 575 110.3C575 126.3 585.6 138.7 601.4 138.7C617.2 138.7 627.8 126.3 627.8 110.3C627.8 94.3 617.1 81.9 601.4 81.9Z" fill="currentColor"/>
+          <path d="M679.1 154.6V83.3H660.6V65.9H679.1V41.3H698.6V65.9H732.2V83.3H698.6V137.1H732.2V154.6H679.1Z" fill="currentColor"/>
+          <path d="M141.8 65.9V83.4H94V154.6H74.5V65.9H141.8Z" fill="currentColor"/>
+          <path d="M141.8 33V50.4H57.2V154.6H37.7V33H141.8Z" fill="currentColor"/>
+          <path d="M141.8 0V17.4H20.4V154.6H0.899994V0H141.8Z" fill="currentColor"/>
+          <path d="M787.8 64.2C811 64.2 830.5 79.6 830.5 108.2C830.5 110.1 830.5 111.7 830.3 114.6H760.6C761.5 129.1 773.2 138.7 787.9 138.7C800.3 138.7 808.6 133 813.2 125.2L828.1 135.8C820.1 148.4 806.3 156.4 787.7 156.4C760.8 156.4 741.4 137.3 741.4 110.3C741.6 84.2 760.9 64.2 787.8 64.2ZM761.6 100.3H810.9C808.8 87.5 798.5 80.6 787.1 80.6C775.8 80.6 764.3 87.2 761.6 100.3Z" fill="currentColor"/>
+        </svg>
+        
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] rounded-lg transition-colors"
+          >
+            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button 
+            onClick={() => setShowKeyModal(true)}
+            className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 transition-colors bg-gray-50 dark:bg-[#1a1a1a] px-2 py-1.5 border border-gray-100 dark:border-[#333] rounded"
+          >
+            {apiKey ? 'Key' : 'Set'}
+          </button>
+        </div>
+      </div>
 
       {/* Image Preview Modal */}
       {previewImage && (
@@ -215,11 +255,31 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* Mobile Sidebar Overlay */}
+      {showMobileSidebar && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      )}
+
       {/* LEFT SIDEBAR - Inputs & Configuration */}
-      <aside className="w-[360px] bg-white dark:bg-[#0f0f0f] border-r border-gray-200 dark:border-[#222] flex flex-col z-20 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] shrink-0 transition-colors duration-300">
+      <aside className={`
+        fixed md:relative
+        w-full md:w-[360px]
+        h-full
+        bg-white dark:bg-[#0f0f0f] 
+        border-r border-gray-200 dark:border-[#222] 
+        flex flex-col 
+        z-40 md:z-20
+        shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] 
+        shrink-0 
+        transition-all duration-300
+        ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         
-        {/* Header */}
-        <div className="px-5 py-6 border-b border-gray-100 dark:border-[#222] flex items-center justify-between shrink-0 transition-colors">
+        {/* Header - Hidden on mobile (shown in top bar instead) */}
+        <div className="hidden md:flex px-5 py-6 border-b border-gray-100 dark:border-[#222] items-center justify-between shrink-0 transition-colors">
             <div className="flex flex-col gap-1.5 items-start">
                {/* Full Replicate Wordmark SVG */}
                <svg viewBox="0 0 831 192" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-auto text-black dark:text-white transition-colors">
@@ -255,6 +315,17 @@ const App: React.FC = () => {
             </div>
         </div>
 
+        {/* Mobile Close Button */}
+        <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-[#222]">
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">Configure</span>
+          <button
+            onClick={() => setShowMobileSidebar(false)}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] rounded-lg transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
         {/* Scrollable Content Area - Removed padding and gaps for flush look */}
         <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
             
@@ -268,9 +339,9 @@ const App: React.FC = () => {
                     <img src={inputImage} alt="Input" className="w-full h-full object-cover" />
                     <button 
                         onClick={(e) => { e.stopPropagation(); setInputImage(null); }} 
-                        className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-1.5 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                        className="absolute top-2 right-2 md:top-3 md:right-3 bg-black/50 hover:bg-black/70 text-white p-2 md:p-1.5 backdrop-blur-sm transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 rounded-lg touch-manipulation active:scale-95"
                     >
-                        <Trash2 size={14} />
+                        <Trash2 size={16} className="md:w-3.5 md:h-3.5" />
                     </button>
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 pointer-events-none transition-colors" />
                     </>
@@ -317,18 +388,23 @@ const App: React.FC = () => {
         {/* Footer / Generate Button */}
         <div className="p-0 shrink-0">
             <button 
-                onClick={handleRun}
+                onClick={() => {
+                  handleRun();
+                  setShowMobileSidebar(false);
+                }}
                 disabled={isProcessing || selectedModels.length === 0}
-                className="w-full bg-black dark:bg-gray-300 text-white dark:text-black h-16 font-bold text-sm hover:bg-gray-900 dark:hover:bg-gray-100 disabled:bg-gray-100 dark:disabled:bg-[#1a1a1a] disabled:text-gray-400 dark:disabled:text-gray-600 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full bg-black dark:bg-gray-300 text-white dark:text-black h-14 md:h-16 font-bold text-sm hover:bg-gray-900 dark:hover:bg-gray-100 disabled:bg-gray-100 dark:disabled:bg-[#1a1a1a] disabled:text-gray-400 dark:disabled:text-gray-600 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
                 {isProcessing ? (
                     <>
                         <div className="w-4 h-4 border-2 border-white/30 dark:border-black/30 border-t-white dark:border-t-black rounded-full animate-spin" />
-                        <span>Running Inference...</span>
+                        <span className="hidden sm:inline">Running Inference...</span>
+                        <span className="sm:hidden">Running...</span>
                     </>
                 ) : (
                     <>
-                        <span>Run Selected Models</span>
+                        <span className="hidden sm:inline">Run Selected Models</span>
+                        <span className="sm:hidden">Run ({selectedModels.length})</span>
                         {selectedModels.length > 0 && (
                             <span className="text-xs font-mono opacity-70">
                                 (~${totalCost.toFixed(2)})
@@ -341,8 +417,16 @@ const App: React.FC = () => {
         </div>
       </aside>
 
+      {/* Floating Action Button for Mobile */}
+      <button
+        onClick={() => setShowMobileSidebar(true)}
+        className="md:hidden fixed bottom-6 right-6 z-30 bg-black dark:bg-white text-white dark:text-black p-4 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform touch-manipulation"
+      >
+        <Wand2 size={24} />
+      </button>
+
       {/* RIGHT MAIN AREA - Output Gallery */}
-      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto p-8 custom-scrollbar transition-colors duration-300">
+      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto p-4 md:p-8 custom-scrollbar transition-colors duration-300 mt-0 md:mt-0">
           
           {/* Removed Header as requested, kept only grid */}
           
@@ -352,7 +436,7 @@ const App: React.FC = () => {
                   <p className="text-gray-400 dark:text-gray-600 text-sm">Select an image and run models to see results</p>
               </div>
           ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-20">
                   {results.map((result) => {
                       const model = AVAILABLE_MODELS.find(m => m.id === result.modelId);
                       const imageUrl = result.status === 'succeeded' && result.output 
@@ -394,21 +478,21 @@ const App: React.FC = () => {
                                               className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
                                               onClick={() => setPreviewImage(imageUrl)}
                                           />
-                                          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                          <div className="absolute top-2 right-2 md:top-3 md:right-3 flex gap-1.5 md:gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                                                 <button 
                                                     onClick={() => setPreviewImage(imageUrl)}
-                                                    className="p-2 bg-white/90 dark:bg-black/90 text-black dark:text-white hover:bg-white dark:hover:bg-black backdrop-blur-sm shadow-sm"
+                                                    className="p-2 md:p-2 bg-white/90 dark:bg-black/90 text-black dark:text-white hover:bg-white dark:hover:bg-black backdrop-blur-sm shadow-sm rounded-lg touch-manipulation active:scale-95 transition-transform"
                                                 >
-                                                    <Maximize2 size={16} />
+                                                    <Maximize2 size={18} className="md:w-4 md:h-4" />
                                                 </button>
                                                 <a 
                                                     href={imageUrl} 
                                                     download 
                                                     target="_blank" 
                                                     rel="noreferrer"
-                                                    className="p-2 bg-white/90 dark:bg-black/90 text-black dark:text-white hover:bg-white dark:hover:bg-black backdrop-blur-sm shadow-sm"
+                                                    className="p-2 md:p-2 bg-white/90 dark:bg-black/90 text-black dark:text-white hover:bg-white dark:hover:bg-black backdrop-blur-sm shadow-sm rounded-lg touch-manipulation active:scale-95 transition-transform"
                                                 >
-                                                    <Download size={16} />
+                                                    <Download size={18} className="md:w-4 md:h-4" />
                                                 </a>
                                           </div>
                                       </>
