@@ -1,0 +1,5 @@
+{
+  "name": "Replicate Model Arena",
+  "description": "A high-fidelity dashboard for comparing Replicate image generation and editing models side-by-side.",
+  "requestFramePermissions": []
+}
