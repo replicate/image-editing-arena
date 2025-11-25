@@ -1,6 +1,4 @@
-<div align="center">
-<img width="1200" alt="Image Editing Arena" src="https://github.com/user-attachments/assets/your-arena-screenshot-url" />
-</div>
+<img width="1193" height="900" alt="Screenshot 2025-11-25 at 3 12 20 PM" src="https://github.com/user-attachments/assets/a57f6d00-267e-49d5-a1cf-76bc195eacbf" />
 
 # Image Editing Arena - Replicate
 
@@ -79,14 +77,4 @@ Contributions are welcome! Please open pull requests for new features, bug fixes
 2. Create your feature branch (`git checkout -b feature/my-feature`)
 3. Commit your changes
 4. Push to the branch and open a pull request
-
-## License
-
-[MIT](LICENSE)
-
----
-
-Thank you for using Image Editing Area - Replicate! If you find this project useful, please give it a star ⭐️
-
-This contains everything you need to run your app locally.
 
