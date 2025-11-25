@@ -68,6 +68,7 @@ const App: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   
   // Initialize dark mode from localStorage or default to false
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -91,6 +92,27 @@ const App: React.FC = () => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
+  // Handle paste from clipboard
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            processImageFile(file);
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, []);
+
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -98,12 +120,45 @@ const App: React.FC = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setInputImage(reader.result as string);
-        setValidationError(null); // Clear error on upload
-      };
-      reader.readAsDataURL(file);
+      processImageFile(file);
+    }
+  };
+
+  const processImageFile = (file: File) => {
+    // Check if it's an image
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setInputImage(reader.result as string);
+      setValidationError(null); // Clear error on upload
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      processImageFile(files[0]);
     }
   };
 
@@ -332,7 +387,13 @@ const App: React.FC = () => {
             {/* 1. IMAGE UPLOAD - Full width, no gaps */}
             <div 
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative w-full aspect-square bg-gray-50 dark:bg-[#121212] cursor-pointer overflow-hidden group transition-colors border-b border-gray-100 dark:border-[#222] shrink-0 ${!inputImage && 'hover:bg-gray-100 dark:hover:bg-[#181818]'} ${validationError && !inputImage ? 'ring-2 ring-red-500 ring-inset z-10' : ''}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`relative w-full aspect-square bg-gray-50 dark:bg-[#121212] cursor-pointer overflow-hidden group transition-all border-b border-gray-100 dark:border-[#222] shrink-0 
+                  ${!inputImage && 'hover:bg-gray-100 dark:hover:bg-[#181818]'} 
+                  ${validationError && !inputImage ? 'ring-2 ring-red-500 ring-inset z-10' : ''} 
+                  ${isDragging ? 'ring-4 ring-blue-500 ring-inset bg-blue-50 dark:bg-blue-950/20' : ''}`}
             >
                 {inputImage ? (
                     <>
@@ -343,13 +404,26 @@ const App: React.FC = () => {
                     >
                         <Trash2 size={16} className="md:w-3.5 md:h-3.5" />
                     </button>
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 pointer-events-none transition-colors" />
+                    {/* Hover overlay - darker when dragging */}
+                    <div className={`absolute inset-0 pointer-events-none transition-colors ${isDragging ? 'bg-blue-500/30' : 'bg-black/0 group-hover:bg-black/5'}`} />
+                    {/* Drag overlay with icon */}
+                    {isDragging && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="bg-blue-500 text-white p-4 rounded-full shadow-lg animate-bounce">
+                          <Upload size={32} />
+                        </div>
+                      </div>
+                    )}
                     </>
                 ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                        <Upload size={24} className={`mb-2 ${validationError && !inputImage ? 'text-red-500' : 'opacity-50'}`} />
-                        <span className={`text-xs font-medium uppercase tracking-wider ${validationError && !inputImage ? 'text-red-500' : ''}`}>
-                        {validationError && !inputImage ? 'Image Required' : 'Upload Image'}
+                    <div className={`absolute inset-0 flex flex-col items-center justify-center transition-colors ${isDragging ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
+                        <Upload size={isDragging ? 32 : 24} className={`mb-2 transition-all ${validationError && !inputImage ? 'text-red-500' : isDragging ? 'text-blue-500 animate-bounce' : 'opacity-50'}`} />
+                        <span className={`text-xs font-medium uppercase tracking-wider text-center px-4 ${validationError && !inputImage ? 'text-red-500' : isDragging ? 'text-blue-500 dark:text-blue-400' : ''}`}>
+                        {validationError && !inputImage 
+                          ? 'Image Required' 
+                          : isDragging 
+                            ? 'Drop Image Here' 
+                            : 'Upload or Drag Image'}
                         </span>
                     </div>
                 )}
