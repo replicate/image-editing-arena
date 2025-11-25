@@ -1,0 +1,7 @@
+name = "image-editing-arena"
+compatibility_date = "2024-01-01"
+assets = { directory = "./dist" }
+
+# This is a static site deployment - no backend code needed
+# Users bring their own Replicate API keys via the web interface
+

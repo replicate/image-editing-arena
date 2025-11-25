@@ -18,8 +18,8 @@ Welcome to the Image Editing Area - Replicate repository! This project provides 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/image-editing-area-replicate.git
-   cd image-editing-area-replicate
+   git clone https://github.com/replicate/image-editing-arena.git
+   cd image-editing-arena
    ```
 
 2. **Install dependencies:**
@@ -32,11 +32,43 @@ Welcome to the Image Editing Area - Replicate repository! This project provides 
    npm run dev
    ```
 
-4. **Open your browser and edit images:**
-   - Go to `http://localhost:3000` (or the displayed port)
-   - Add your REPLICATE_API_KEY in the pop-up modal
-   - Drag and drop an image or upload from your device
-   - Choose from available editing options powered by the AI backend
+4. **Open your browser:**
+   - Go to `http://localhost:5173`
+   - Enter your Replicate API key when prompted (get one at [replicate.com](https://replicate.com))
+   - Upload an image and enter a prompt
+   - Select models and compare results side-by-side
+
+## Deployment
+
+### Deploy to Cloudflare Workers
+
+1. **Login to Cloudflare:**
+   ```bash
+   npx wrangler login
+   ```
+
+2. **Deploy:**
+   ```bash
+   npm run deploy
+   ```
+
+Your site will be deployed to `https://image-editing-arena.<your-subdomain>.workers.dev`
+
+### Alternative: Deploy to Cloudflare Pages
+
+```bash
+npm run cf:deploy
+```
+
+### Other Platforms
+
+Build the static files and deploy to any static hosting:
+
+```bash
+npm run build
+```
+
+The `dist` folder can be deployed to Vercel, Netlify, GitHub Pages, etc.
 
 
 ## Contributing
