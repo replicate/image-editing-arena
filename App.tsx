@@ -1,14 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ModelSelector } from './components/ModelSelector';
 import { ApiKeyModal } from './components/ApiKeyModal';
+import { ExampleCarousel } from './components/ExampleCarousel';
 import { AVAILABLE_MODELS } from './constants';
 import { createPrediction, pollPrediction } from './services/replicateService';
 import { PredictionResult } from './types';
 import { Wand2, Download, Upload, Trash2, AlertTriangle, Clock, ChevronRight, X, Maximize2, Moon, Sun, Menu } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [apiKey, setApiKey] = useState<string>('');
-  const [showKeyModal, setShowKeyModal] = useState(true);
+  // Initialize API key from localStorage if available
+  const [apiKey, setApiKey] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('replicateApiKey') || '';
+    }
+    return '';
+  });
+  const [showKeyModal, setShowKeyModal] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [prompt, setPrompt] = useState<string>("Turn the fire into water");
   
@@ -249,9 +256,33 @@ const App: React.FC = () => {
     setIsProcessing(false);
   };
 
+  const handleSaveApiKey = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem('replicateApiKey', key);
+    setShowKeyModal(false);
+  };
+
+  const handleExampleChange = (examplePrompt: string, exampleImage: string, exampleResults: PredictionResult[], selectedModelIds: string[]) => {
+    setPrompt(examplePrompt);
+    setInputImage(exampleImage);
+    setResults(exampleResults);
+    setSelectedModels(selectedModelIds); // Update selected models to match example
+    setShowMobileSidebar(false); // Close mobile sidebar if open
+  };
+
+  // Load first example on mount
+  useEffect(() => {
+    // This will be triggered by the ExampleCarousel's initial render
+  }, []);
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans overflow-hidden transition-colors duration-300">
-      <ApiKeyModal isOpen={showKeyModal} onSave={(key) => { setApiKey(key); setShowKeyModal(false); }} />
+      <ApiKeyModal 
+        isOpen={showKeyModal} 
+        onSave={handleSaveApiKey} 
+        onClose={() => setShowKeyModal(false)}
+        currentKey={apiKey} 
+      />
 
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0f0f0f] border-b border-gray-200 dark:border-[#222] z-30">
@@ -500,10 +531,13 @@ const App: React.FC = () => {
       </button>
 
       {/* RIGHT MAIN AREA - Output Gallery */}
-      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto p-4 md:p-8 custom-scrollbar transition-colors duration-300 mt-0 md:mt-0">
+      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto custom-scrollbar transition-colors duration-300 flex flex-col">
           
-          {/* Removed Header as requested, kept only grid */}
+          {/* Example Carousel */}
+          <ExampleCarousel onExampleChange={handleExampleChange} />
           
+          {/* Results Grid */}
+          <div className="flex-1 p-4 md:p-8">
           {results.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center opacity-50">
                   <Wand2 size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
@@ -588,6 +622,7 @@ const App: React.FC = () => {
                   })}
               </div>
           )}
+          </div>
       </main>
     </div>
   );
