@@ -2,6 +2,15 @@ name = "image-editing-arena"
 compatibility_date = "2024-01-01"
 assets = { directory = "./dist" }
 
+# Deploy to Replicate's Cloudflare account
+# Custom domain: image-editing-arena.replicate.dev
+account_id = "45191806b6bd0ba8191dccddce0b6944"
+
 # This is a static site deployment - no backend code needed
 # Users bring their own Replicate API keys via the web interface
+
+# Routes configuration for custom domain
+routes = [
+  { pattern = "image-editing-arena.replicate.dev", custom_domain = true }
+]
 

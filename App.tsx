@@ -533,8 +533,10 @@ const App: React.FC = () => {
       {/* RIGHT MAIN AREA - Output Gallery */}
       <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto custom-scrollbar transition-colors duration-300 flex flex-col">
           
-          {/* Example Carousel */}
-          <ExampleCarousel onExampleChange={handleExampleChange} />
+          {/* Example Carousel - Sticky */}
+          <div className="sticky top-0 z-20 bg-[#F5F5F5] dark:bg-[#0a0a0a]">
+            <ExampleCarousel onExampleChange={handleExampleChange} />
+          </div>
           
           {/* Results Grid */}
           <div className="flex-1 p-4 md:p-8">
@@ -545,7 +547,13 @@ const App: React.FC = () => {
               </div>
           ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-20">
-                  {results.map((result) => {
+                  {results
+                      .sort((a, b) => {
+                          const indexA = AVAILABLE_MODELS.findIndex(m => m.id === a.modelId);
+                          const indexB = AVAILABLE_MODELS.findIndex(m => m.id === b.modelId);
+                          return indexA - indexB;
+                      })
+                      .map((result) => {
                       const model = AVAILABLE_MODELS.find(m => m.id === result.modelId);
                       const imageUrl = result.status === 'succeeded' && result.output 
                           ? (Array.isArray(result.output) ? result.output[0] : result.output) 
