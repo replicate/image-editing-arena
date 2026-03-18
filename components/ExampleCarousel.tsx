@@ -195,6 +195,25 @@ interface ExampleCarouselProps {
   onExampleChange: (prompt: string, inputImage: string, results: any[], selectedModels: string[]) => void;
 }
 
+// Preload all example images on module load
+const preloadImages = () => {
+  const allUrls = new Set<string>();
+  EXAMPLES.forEach(example => {
+    allUrls.add(example.inputImage);
+    example.results.forEach(r => allUrls.add(r.output));
+  });
+  
+  allUrls.forEach(url => {
+    const img = new Image();
+    img.src = url;
+  });
+};
+
+// Start preloading immediately when module loads
+if (typeof window !== 'undefined') {
+  preloadImages();
+}
+
 export const ExampleCarousel: React.FC<ExampleCarouselProps> = ({ onExampleChange }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 

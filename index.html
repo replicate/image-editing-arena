@@ -25,10 +25,12 @@
     <script>
       // Apply dark mode immediately to prevent flash
       (function() {
-        const darkMode = localStorage.getItem('darkMode');
-        if (darkMode === 'true') {
-          document.documentElement.classList.add('dark');
-        }
+        try {
+          const darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          if (darkMode) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
       })();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>

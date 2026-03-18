@@ -276,7 +276,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans overflow-hidden transition-colors duration-300">
+    <div className="flex flex-col md:flex-row h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans overflow-hidden">
       <ApiKeyModal 
         isOpen={showKeyModal} 
         onSave={handleSaveApiKey} 
@@ -531,7 +531,7 @@ const App: React.FC = () => {
       </button>
 
       {/* RIGHT MAIN AREA - Output Gallery */}
-      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto custom-scrollbar transition-colors duration-300 flex flex-col">
+      <main className="flex-1 bg-[#F5F5F5] dark:bg-[#0a0a0a] overflow-y-auto custom-scrollbar flex flex-col">
           
           {/* Example Carousel - Sticky */}
           <div className="sticky top-0 z-20 bg-[#F5F5F5] dark:bg-[#0a0a0a]">
