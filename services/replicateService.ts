@@ -4,8 +4,9 @@ const SLEEP_MS = 1500; // Poll interval
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// Use CORS proxy to bypass browser restrictions
-const PROXY_URL = "https://corsproxy.io/?";
+// Use our own Cloudflare Worker as a proxy to avoid CORS issues
+// The worker proxies requests to the Replicate API server-side
+const API_BASE = '/api/replicate';
 
 interface Prediction {
   id: string;
@@ -56,8 +57,8 @@ export const createPrediction = async (
     }
   }
 
-  const targetUrl = `https://api.replicate.com/v1/models/${model.owner}/${model.name}/predictions`;
-  const url = `${PROXY_URL}${targetUrl}`;
+  // Use our worker proxy endpoint
+  const url = `${API_BASE}/v1/models/${model.owner}/${model.name}/predictions`;
 
   try {
     const response = await fetch(url, {
@@ -87,17 +88,19 @@ export const createPrediction = async (
     return prediction;
   } catch (err: any) {
     if (err.message === 'Failed to fetch') {
-      throw new Error("Network error. The CORS proxy might be blocked or down.");
+      throw new Error("Network error. Please check your connection and try again.");
     }
     throw err;
   }
 };
 
 export const pollPrediction = async (apiKey: string, predictionUrl: string): Promise<Prediction> => {
-  const url = `${PROXY_URL}${predictionUrl}`;
+  // Convert the full Replicate URL to use our worker proxy
+  // predictionUrl is like: https://api.replicate.com/v1/predictions/xxx
+  const proxyPath = predictionUrl.replace('https://api.replicate.com', API_BASE);
 
   while (true) {
-    const response = await fetch(url, {
+    const response = await fetch(proxyPath, {
       headers: {
         'Authorization': `Token ${apiKey}`,
         'Content-Type': 'application/json',

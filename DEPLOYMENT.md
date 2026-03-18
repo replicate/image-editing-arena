@@ -103,9 +103,9 @@ To use a custom domain with Cloudflare Workers:
 
 ### Environment Notes
 
-- **No backend required** - This is a pure static site
+- **Worker + static assets** - The worker proxies Replicate API calls, static assets are served from dist/
 - **API keys are client-side** - Users enter their own Replicate API keys
-- **CORS proxy** - Uses `corsproxy.io` to bypass browser CORS restrictions
+- **No CORS issues** - The worker makes server-side requests to Replicate, avoiding browser CORS restrictions
 - **No secrets needed** - No server-side configuration required
 
 ## Troubleshooting
@@ -131,9 +131,9 @@ If not logged in:
 npx wrangler login
 ```
 
-### CORS issues
+### API issues
 
-The app uses a CORS proxy (`corsproxy.io`) to make requests to Replicate's API from the browser. If this proxy is down, users may experience issues. The proxy URL can be changed in `services/replicateService.ts`.
+The app uses a Cloudflare Worker to proxy requests to the Replicate API. This avoids CORS issues since the worker makes server-side requests. The proxy endpoint is `/api/replicate/*` which forwards to `https://api.replicate.com/*`.
 
 ## Cost
 
